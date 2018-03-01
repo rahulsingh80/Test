@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root folderName="TestFolder"  appName="TestApp">
+ 
+ <Database-Table name="employee" action="create" voClassName="EmployeeVO" serviceClassName="EmployeeService" dbClassName="EmployeeDAO">
+  <column action="add" name="Employee_Internal_id" dataType="Int" primaryKey="Yes"></column>
+  <column action="add" name="Employee_Name" dataType="Varchar2" maxLength="64" notNull="Yes" ></column>
+  <column action="add" name="Employee_Age" dataType="Int" ></column>
+  <column action="add" name="DateOfBirth" dataType="Date" primaryKey="No"></column>
+ </Database-Table>
+
+ <Database-Table name="Salary" action="create">
+  <column action="add" name="Employee_Internal_id" dataType="Int" parentTable="Employee"  parentColumn="Employee_Internal_id"></column>
+  <column action="add" name="Employee_Salary" dataType="number" notNull="yes" ></column>
+  <column action="add" name="Credit_Date" dataType="date" notNull="yes" ></column>
+ </Database-Table>
+
+</root>

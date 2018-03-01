@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root folderName="TestFolder"  appName="TestApp">
+ <Database-Table name="hatchery_division_report" action="create" voClassName="HatcheryDivisionReportVO" serviceClassName="HatcheryDivisionReportService" dbClassName="HatcheryDivisionReportDAO">
+
+  <column action="add" name="hatchery_report_Internal_id" dataType="Int" primaryKey="Yes">
+  </column>
+
+   <column action="add" name="batch" dataType="Varchar" maxLength="100" notNull="Yes" >
+  </column>
+
+  
+  
+  <column action="add" name="eggs_code_nbr" dataType="Varchar" maxLength="100" notNull="Yes" >
+  </column>
+
+  
+  <column action="add" name="flock_nbr" dataType="Int" >
+  </column>
+  
+  
+  <column action="add" name="qty_received" dataType="long" >
+  </column>
+  
+  
+  <column action="add" name="storage_period" dataType="Varchar" maxLength="100" notNull="Yes">
+  </column>
+  
+  
+  <column action="add" name="storage_temp" dataType="Varchar" maxLength="100" notNull="Yes">
+  </column>
+  
+  
+  <column action="add" name="supplier_name" dataType="Varchar" maxLength="256" notNull="Yes" >
+  </column>
+  
+  <column action="add" name="breed" dataType="Varchar" maxLength="256" notNull="Yes" >
+  </column>
+  
+  <column action="add" name="country_of_origin" dataType="Varchar" maxLength="100" notNull="Yes" >
+  </column>
+
+  
+   
+  <column action="add" name="arrival_dt" dataType="Date" >
+  </column>
+  
+  
+  <column action="add" name="fumigation_dt" dataType="Date" >
+  </column>
+  
+  
+  
+  <column action="add" name="rejected_total_setting" dataType="Int" >
+  </column>
+  
+  
+  <column action="add" name="rejected_eggs" dataType="Int" >
+  </column>
+  
+  
+  <column action="add" name="eggs_setting_nbr" dataType="long" >
+  </column>
+  
+  
+  
+  <column action="add" name="eggs_avg_weight" dataType="Varchar" maxLength="256" notNull="Yes" >
+  </column>
+  
+  
+  
+  
+  
+  <column action="add" name="setter_nbr" dataType="Int" >
+  </column>
+  
+  
+  
+  <column action="add" name="infertile_eggs" dataType="Int" >
+  </column>
+  
+  
+  <column action="add" name="fertile_eggs" dataType="long" >
+  </column>
+  
+  
+  
+  
+  <column action="add" name="infertile_eggs_pct" dataType="Int" >
+  </column>
+  
+  
+  <column action="add" name="fertile_eggs_pct" dataType="Int" >
+  </column>
+  
+  
+
+  
+  <column action="add" name="setting_dt" dataType="Date" >
+  </column>
+  
+  
+  <column action="add" name="candling_dt" dataType="Date" >
+  </column>
+  
+
+
+
+  <column action="add" name="dead_in_shell" dataType="Int" >
+  </column>
+   
+
+
+  <column action="add" name="rejected_chicks" dataType="Int" >
+  </column>
+  
+  
+  <column action="add" name="total_rejection" dataType="Int" >
+  </column>
+  
+  
+  <column action="add" name="dead_in_shell_pct" dataType="Int" >
+  </column>
+   
+  <column action="add" name="rejected_chicks_pct" dataType="Int" >
+  </column>
+  
+  
+  <column action="add" name="total_rejection_pct" dataType="Int" >
+  </column>
+  
+  
+  
+  <column action="add" name="chicks_send_to_farm" dataType="long" >
+  </column>
+
+
+  <column action="add" name="chicks_avg_weight" dataType="Varchar" maxLength="256" notNull="Yes" >
+  </column>
+  
+  
+  
+  <column action="add" name="chicks_transfer_dt" dataType="Date" >
+  </column>
+  
+  <column action="add" name="chicks_selection_dt" dataType="Date" >
+  </column>
+  
+  
+  
+  <column action="add" name="house_nbr" dataType="Varchar" maxLength="20">
+  </column>
+  
+  
+    
+</Database-Table>
+
+
+
+</root>
