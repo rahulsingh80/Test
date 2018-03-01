@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +17,6 @@ import me.rahul.input.SearchStrategy;
 public class TrieDictionaryImpl implements Dictionary {
 
 	private Node root = new Node();
-	private SearchStrategy searchStrategy;
-
-	public void setSearchStrategy(SearchStrategy searchStrategy) {
-		this.searchStrategy = searchStrategy;
-	}
 
 	public Node getRoot() {
 		return root;
@@ -29,7 +26,7 @@ public class TrieDictionaryImpl implements Dictionary {
 		Map<Character, Node> children;
 		boolean isLeaf;
 		String word;
-		
+
 		@Override
 		public String toString() {
 			String str = "";
@@ -43,14 +40,13 @@ public class TrieDictionaryImpl implements Dictionary {
 	public void addWord(String word) {
 		char[] wordChars = word.toCharArray();
 		Node currNode = root;
-		for (int i=0; i<wordChars.length; i++) {
+		for (int i = 0; i < wordChars.length; i++) {
 			char c = wordChars[i];
 			if (null == currNode.children)
 				currNode.children = new HashMap<>();
 			if (currNode.children.containsKey(c)) {
 				currNode = currNode.children.get(c);
-			}
-			else {
+			} else {
 				Node newNode = new Node();
 				currNode.children.put(c, newNode);
 				currNode = newNode;
@@ -73,20 +69,13 @@ public class TrieDictionaryImpl implements Dictionary {
 			e.printStackTrace();
 		}
 		String line;
-	    try {
+		try {
 			while ((line = reader.readLine()) != null) {
 				addWord(line);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public List<String> getMatches(String phoneNumber) {
-		//
-		searchStrategy.getMatches(phoneNumber);
-		return null;
 	}
 
 }

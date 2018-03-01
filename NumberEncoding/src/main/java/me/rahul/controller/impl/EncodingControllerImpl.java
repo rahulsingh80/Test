@@ -19,9 +19,11 @@ public class EncodingControllerImpl implements EncodingController {
 
 	private TrieDictionaryImpl dictionary;
 	private DefaultTrieSearchStrategy searchStrategy;
+
 	public void encodeNumbers(String dictionaryLocation, String phoneNumbersLocation) {
 		//Create dictionary
 		createDictionary(dictionaryLocation);
+		searchStrategy = new DefaultTrieSearchStrategy(dictionary);
 		
 		//Read incoming numbers from the stream, Get matches from dictionary
 		BufferedReader reader = null;
@@ -33,17 +35,21 @@ public class EncodingControllerImpl implements EncodingController {
 		String line;
 	    try {
 			while ((line = reader.readLine()) != null) {
-				
+				List<String> matches = searchStrategy.getMatches(line);
+				//matches.stream().forEach(System.out::println);
+				for (String match : matches) {
+					System.out.println(line + ": " + match);
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		printMatches(phoneNumbersLocation);
+		//printMatches(phoneNumbersLocation);
 		//for ()
 	}
 
-	private void printMatches(String phoneNumbersLocation) {
+	/*private void printMatches(String phoneNumbersLocation) {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(phoneNumbersLocation));
@@ -66,10 +72,10 @@ public class EncodingControllerImpl implements EncodingController {
 	    
 	    
 	    //With Streams
-	    /*List<String> alist = Files.lines(Paths.get(phoneNumbersLocation))
+	    List<String> alist = Files.lines(Paths.get(phoneNumbersLocation))
 	    	    .filter(line -> line.contains("abc"))
-	    	    .collect(Collectors.toList());*/
-	}
+	    	    .collect(Collectors.toList());
+	}*/
 
 	private char[] getDigitsOnly(String line) {
 		// Fix this method!!!
@@ -80,6 +86,21 @@ public class EncodingControllerImpl implements EncodingController {
 	private void createDictionary(String dictionaryLocation) {
 		//Dictionary is best gotten from another call. or through injection
 		dictionary = new TrieDictionaryImpl();
+
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(dictionaryLocation));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		String line;
+	    try {
+			while ((line = reader.readLine()) != null) {
+			    dictionary.addWord(line);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}	
 	}
 
 	/**
@@ -91,4 +112,10 @@ public class EncodingControllerImpl implements EncodingController {
 	/*private List<String> getMatches(String number) {	
 		
 	}*/
+
+	public static void main(String[] args) {
+		EncodingControllerImpl controller = new EncodingControllerImpl();
+		controller.encodeNumbers("F:\\TestDictionary.txt", "F:\\TestPhoneNumbers.txt");
+		System.out.println();
+	}
 }

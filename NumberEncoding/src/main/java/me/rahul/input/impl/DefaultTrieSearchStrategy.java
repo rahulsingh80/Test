@@ -1,6 +1,8 @@
 package me.rahul.input.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +15,7 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	private TrieDictionaryImpl dictionary; 
 	static Map<Character, List<Character>> mapping;	//This should probably be populated outside!!!
 
-	public void DefaultTrieSearchStrategy(TrieDictionaryImpl dictionary) {
+	public DefaultTrieSearchStrategy(TrieDictionaryImpl dictionary) {
 		this.dictionary = dictionary;
 		populate();
 	}
@@ -34,29 +36,48 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 
 	@Override
 	public List<String> getMatches(String phoneNumber) {
-		char[] digits = phoneNumber.toCharArray();
-
-		//You start with root node as current node
-		Node currNode = dictionary.getRoot();
-
-		//You read digit by digit
-		for (int i=0; i<phoneNumber.length(); i++) {
-			char digit = digits[i];
-			//For each digit, go through corresponding alphabets and get matching children of curr Node
-			currNode.
-				//For the matches, recursive DFS 
-		}
-		return null;
+		// Take every digit and dfs down from root.
+				char[] digits = phoneNumber.toCharArray();
+				return dfs(digits, 0, dictionary.getRoot());
 	}
 
-	private String dfs(Node currNode, char digit) {
-		List<Character> alphabets = mapping.get(digit);
-		for (char c : alphabets) {
-			Node next = currNode.children.get(c);
-			if (null != next) {
-				
+	/**
+	 *
+	 * @param digits - char array of phone number
+	 * @param pos - current position in digits
+	 * @param currNode - current node in tree
+	 * 
+	 * @return
+	 * 
+	 */
+	private List<String> dfs(char[] digits, int pos, Node currNode) {
+		// Check if final digit.
+		if (pos == digits.length) {
+			// Do '$' check and return name if such is the case
+			if (currNode.children.containsKey('$')) {
+				return Arrays.asList(currNode.children.get('$').word);
 			}
+			return Collections.emptyList();
 		}
-		return null;
+
+		// Get current digit.
+		char currDigit = digits[pos];
+		//Ignore dashes and slashes.	//Fix this!!!!!!
+		while (currDigit == '-' || currDigit == '/') {
+			currDigit = digits[++pos];
+		}
+			
+		// Get mappings for current digit
+		List<Character> digitMappings = mapping.get(currDigit);
+		List<String> res = new ArrayList<>();
+		for (char searchChar : digitMappings) {
+			if (currNode.children.containsKey(searchChar)) {
+				res.addAll(dfs(digits, pos + 1, currNode.children.get(searchChar)));
+			}
+			// Call back for each mapping and add to result. return result.
+
+		}
+		return res;
+
 	}
 }
