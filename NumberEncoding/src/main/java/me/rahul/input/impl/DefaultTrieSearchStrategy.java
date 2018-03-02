@@ -35,14 +35,31 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 
 	@Override
 	public List<String> getMatches(String phoneNumber) {
-		// Take every digit and dfs down from root.
-		char[] digits = phoneNumber.toCharArray();
+		int actualSize = getActualSize(phoneNumber);
+		char[] digits = new char[actualSize];
+		int j=0;
+		for (int i=0; i<phoneNumber.length(); i++) {
+			if (phoneNumber.charAt(i) == '-' || phoneNumber.charAt(i) == '/')
+				continue;
+			digits[j++] = phoneNumber.charAt(i);
+		}
 		return getMatches(digits, 0);
 	}
 
+	private int getActualSize(String phoneNumber) {
+		int i=0;
+		for (int j=0; j<phoneNumber.length(); j++) {
+			if (phoneNumber.charAt(j) == '-' || phoneNumber.charAt(j) == '/')
+				i++;
+		}
+		return phoneNumber.length() - i;
+	}
+
 	private boolean isPrevDigitUsed = false;
+
 	private List<String> getMatches(char[] digits, int pos) {
 		List<String> res = dfs(digits, pos, dictionary.getRoot());
+
 		if (!isPrevDigitUsed && res.isEmpty()) {
 			String currWord = digits[pos] + "";
 			if (pos == digits.length-1)
@@ -65,7 +82,6 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	 * @return
 	 */
 	private List<String> dfs(char[] digits, int pos, Node currNode) {
-		pos = getNextPosition(digits, pos);
 		//If end of digits reached, return String in currNode
 		if (pos == digits.length)
 			return getWordForNode(currNode);
@@ -101,17 +117,5 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 			return Arrays.asList(node.children.get('$').word);
 		else
 			return Collections.emptyList();
-	}
-
-	private int getNextPosition(char[] digits, int pos) {
-		char currDigit;
-		int i=pos;
-		for (; i<digits.length; i++) {
-			currDigit = digits[i];
-			if (currDigit == '-' || currDigit == '/')
-				continue;
-			else return i;
-		}
-		return i;
 	}
 }
