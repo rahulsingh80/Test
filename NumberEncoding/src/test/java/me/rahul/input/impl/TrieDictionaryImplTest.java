@@ -2,6 +2,8 @@ package me.rahul.input.impl;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,6 +31,11 @@ public class TrieDictionaryImplTest {
 		dict.addWord("Papa");
 		dict.addWord("Mama");
 		dict.addWord("Ma");
+		
+		DefaultTrieSearchStrategy strategy = new DefaultTrieSearchStrategy(dict);
+		List<String> res = strategy.getMatches("55");
+		System.out.println(res);
+		
 		fail("Not yet implemented");
 	}
 

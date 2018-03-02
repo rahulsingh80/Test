@@ -38,7 +38,8 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	public List<String> getMatches(String phoneNumber) {
 		// Take every digit and dfs down from root.
 				char[] digits = phoneNumber.toCharArray();
-				return dfs(digits, 0, dictionary.getRoot());
+				//return dfs(digits, 0, dictionary.getRoot());
+				return dfs2(digits, 0, dictionary.getRoot());
 	}
 
 	/**
@@ -50,7 +51,7 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	 * @return
 	 * 
 	 */
-	private List<String> dfs(char[] digits, int pos, Node currNode) {
+	/*private List<String> dfs(char[] digits, int pos, Node currNode) {
 		// Check if final digit.
 		if (pos == digits.length) {
 			// Do '$' check and return name if such is the case
@@ -70,14 +71,59 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 		// Get mappings for current digit
 		List<Character> digitMappings = mapping.get(currDigit);
 		List<String> res = new ArrayList<>();
+		// Call back for each mapping and add to result.
 		for (char searchChar : digitMappings) {
 			if (currNode.children.containsKey(searchChar)) {
 				res.addAll(dfs(digits, pos + 1, currNode.children.get(searchChar)));
 			}
-			// Call back for each mapping and add to result. return result.
-
 		}
 		return res;
 
+	}*/
+
+	/**
+	 * Partial match
+	 * @param digits
+	 * @param pos
+	 * @param currNode
+	 * @return
+	 */
+	private List<String> dfs2(char[] digits, int pos, Node currNode) {
+		//If end of digits reached, return String in currNode
+		if (pos == digits.length) {
+			if (currNode.children.containsKey('$'))
+				return Arrays.asList(currNode.children.get('$').word);
+			else
+				return Collections.emptyList();
+		}
+
+		// Get current digit.
+		char currDigit = digits[pos];
+		//Ignore dashes and slashes.	//Fix this!!!!!!
+		while (currDigit == '-' || currDigit == '/') {
+			currDigit = digits[++pos];
+		}
+		List<String> partialRes = new ArrayList<>();
+		//If curr Node has a $ child
+		if (currNode.children.containsKey('$')) {
+			//curr word + dfs rest of digits with root node
+			String currWord = currNode.children.get('$').word;
+			partialRes = dfs2(digits, pos, dictionary.getRoot());
+			for (int i=0; i<partialRes.size(); i++) {
+				partialRes.set(i, currWord + " " + partialRes.get(i));
+			}
+		}
+		//Get mappings for current digit
+		List<String> fullRes = new ArrayList<>();
+		List<Character> digitMappings = mapping.get(currDigit);
+		// Call back for each mapping and add to result.
+		for (char searchChar : digitMappings) {
+			if (currNode.children.containsKey(searchChar)) {
+				fullRes.addAll(dfs2(digits, pos+1, currNode.children.get(searchChar)));
+			}
+		}
+
+		fullRes.addAll(partialRes);
+		return fullRes;
 	}
 }
