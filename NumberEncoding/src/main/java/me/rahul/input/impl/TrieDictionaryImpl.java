@@ -42,6 +42,8 @@ public class TrieDictionaryImpl implements Dictionary {
 		Node currNode = root;
 		for (int i = 0; i < wordChars.length; i++) {
 			char c = wordChars[i];
+			if (c == '"')
+				continue;
 			if (null == currNode.children)
 				currNode.children = new HashMap<>();
 			if (currNode.children.containsKey(c)) {

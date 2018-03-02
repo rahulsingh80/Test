@@ -13,7 +13,7 @@ import me.rahul.input.impl.TrieDictionaryImpl.Node;
 public class DefaultTrieSearchStrategy implements SearchStrategy {
 
 	private TrieDictionaryImpl dictionary; 
-	static Map<Character, List<Character>> mapping;	//This should probably be populated outside!!!
+	static final Map<Character, List<Character>> mapping = new HashMap<>();	//This should probably be populated outside!!!
 
 	public DefaultTrieSearchStrategy(TrieDictionaryImpl dictionary) {
 		this.dictionary = dictionary;
@@ -21,7 +21,6 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	}
 
 	static void populate() {	//This should probably be populated outside!!!
-		mapping = new HashMap<>();
 		mapping.put('0', Arrays.asList('E', 'e'));
 		mapping.put('1', Arrays.asList('J', 'N', 'Q', 'j', 'n', 'q'));
 		mapping.put('2', Arrays.asList('R', 'W', 'X', 'r', 'w', 'x'));
@@ -37,49 +36,26 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	@Override
 	public List<String> getMatches(String phoneNumber) {
 		// Take every digit and dfs down from root.
-				char[] digits = phoneNumber.toCharArray();
-				//return dfs(digits, 0, dictionary.getRoot());
-				return dfs2(digits, 0, dictionary.getRoot());
+		char[] digits = phoneNumber.toCharArray();
+		return getMatches(digits, 0);
 	}
 
-	/**
-	 *
-	 * @param digits - char array of phone number
-	 * @param pos - current position in digits
-	 * @param currNode - current node in tree
-	 * 
-	 * @return
-	 * 
-	 */
-	/*private List<String> dfs(char[] digits, int pos, Node currNode) {
-		// Check if final digit.
-		if (pos == digits.length) {
-			// Do '$' check and return name if such is the case
-			if (currNode.children.containsKey('$')) {
-				return Arrays.asList(currNode.children.get('$').word);
-			}
-			return Collections.emptyList();
+	private boolean isPrevDigitUsed = false;
+	private List<String> getMatches(char[] digits, int pos) {
+		List<String> res = dfs(digits, pos, dictionary.getRoot());
+		if (!isPrevDigitUsed && res.isEmpty()) {
+			String currWord = digits[pos] + "";
+			if (pos == digits.length-1)
+				return Arrays.asList(currWord);
+			res = dfs(digits, pos+1, dictionary.getRoot());
+			for (int i=0; i<res.size(); i++)
+				res.set(i, currWord + " " + res.get(i));
+			isPrevDigitUsed = true;
 		}
-
-		// Get current digit.
-		char currDigit = digits[pos];
-		//Ignore dashes and slashes.	//Fix this!!!!!!
-		while (currDigit == '-' || currDigit == '/') {
-			currDigit = digits[++pos];
-		}
-			
-		// Get mappings for current digit
-		List<Character> digitMappings = mapping.get(currDigit);
-		List<String> res = new ArrayList<>();
-		// Call back for each mapping and add to result.
-		for (char searchChar : digitMappings) {
-			if (currNode.children.containsKey(searchChar)) {
-				res.addAll(dfs(digits, pos + 1, currNode.children.get(searchChar)));
-			}
-		}
+		else
+			isPrevDigitUsed = false;
 		return res;
-
-	}*/
+	}
 
 	/**
 	 * Partial match
@@ -88,42 +64,54 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	 * @param currNode
 	 * @return
 	 */
-	private List<String> dfs2(char[] digits, int pos, Node currNode) {
+	private List<String> dfs(char[] digits, int pos, Node currNode) {
+		pos = getNextPosition(digits, pos);
 		//If end of digits reached, return String in currNode
-		if (pos == digits.length) {
-			if (currNode.children.containsKey('$'))
-				return Arrays.asList(currNode.children.get('$').word);
-			else
-				return Collections.emptyList();
-		}
+		if (pos == digits.length)
+			return getWordForNode(currNode);
 
 		// Get current digit.
 		char currDigit = digits[pos];
-		//Ignore dashes and slashes.	//Fix this!!!!!!
-		while (currDigit == '-' || currDigit == '/') {
-			currDigit = digits[++pos];
-		}
+
 		List<String> partialRes = new ArrayList<>();
-		//If curr Node has a $ child
+		//If curr Node is an end node. (But phone number has not reached its end)
 		if (currNode.children.containsKey('$')) {
 			//curr word + dfs rest of digits with root node
 			String currWord = currNode.children.get('$').word;
-			partialRes = dfs2(digits, pos, dictionary.getRoot());
-			for (int i=0; i<partialRes.size(); i++) {
+			partialRes = getMatches(digits, pos);
+			for (int i=0; i<partialRes.size(); i++)
 				partialRes.set(i, currWord + " " + partialRes.get(i));
-			}
 		}
+
 		//Get mappings for current digit
 		List<String> fullRes = new ArrayList<>();
 		List<Character> digitMappings = mapping.get(currDigit);
 		// Call back for each mapping and add to result.
-		for (char searchChar : digitMappings) {
-			if (currNode.children.containsKey(searchChar)) {
-				fullRes.addAll(dfs2(digits, pos+1, currNode.children.get(searchChar)));
-			}
-		}
+		for (char searchChar : digitMappings)
+			if (currNode.children.containsKey(searchChar))
+				fullRes.addAll(dfs(digits, pos+1, currNode.children.get(searchChar)));
 
 		fullRes.addAll(partialRes);
+			
 		return fullRes;
+	}
+
+	private List<String> getWordForNode(Node node) {
+		if (node.children.containsKey('$'))
+			return Arrays.asList(node.children.get('$').word);
+		else
+			return Collections.emptyList();
+	}
+
+	private int getNextPosition(char[] digits, int pos) {
+		char currDigit;
+		int i=pos;
+		for (; i<digits.length; i++) {
+			currDigit = digits[i];
+			if (currDigit == '-' || currDigit == '/')
+				continue;
+			else return i;
+		}
+		return i;
 	}
 }
