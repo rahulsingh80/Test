@@ -1,4 +1,4 @@
-package me.rahul.input.impl;
+package me.rahul.data.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,20 +7,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.rahul.input.SearchStrategy;
-import me.rahul.input.impl.TrieDictionaryImpl.Node;
+import me.rahul.data.SearchStrategy;
+import me.rahul.data.impl.TrieDictionaryImpl.Node;
 
 public class DefaultTrieSearchStrategy implements SearchStrategy {
 
 	private TrieDictionaryImpl dictionary; 
-	static final Map<Character, List<Character>> mapping = new HashMap<>();	//This should probably be populated outside!!!
+	static final Map<Character, List<Character>> mapping = new HashMap<>();
 
 	public DefaultTrieSearchStrategy(TrieDictionaryImpl dictionary) {
 		this.dictionary = dictionary;
-		populate();
 	}
 
-	static void populate() {	//This should probably be populated outside!!!
+	static {
 		mapping.put('0', Arrays.asList('E', 'e'));
 		mapping.put('1', Arrays.asList('J', 'N', 'Q', 'j', 'n', 'q'));
 		mapping.put('2', Arrays.asList('R', 'W', 'X', 'r', 'w', 'x'));
@@ -37,12 +36,14 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	public List<String> getMatches(String phoneNumber) {
 		int actualSize = getActualSize(phoneNumber);
 		char[] digits = new char[actualSize];
+		//Populate digits array, ignore slashes and dashes
 		int j=0;
 		for (int i=0; i<phoneNumber.length(); i++) {
 			if (phoneNumber.charAt(i) == '-' || phoneNumber.charAt(i) == '/')
 				continue;
 			digits[j++] = phoneNumber.charAt(i);
 		}
+
 		return getMatches(digits, 0);
 	}
 
@@ -84,16 +85,15 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	private List<String> dfs(char[] digits, int pos, Node currNode) {
 		//If end of digits reached, return String in currNode
 		if (pos == digits.length)
-			return getWordForNode(currNode);
-
-		// Get current digit.
+			return (currNode.isEndNode() ? Arrays.asList(currNode.getEndWord()) : Collections.emptyList());
+			
 		char currDigit = digits[pos];
 
-		List<String> partialRes = new ArrayList<>();
 		//If curr Node is an end node. (But phone number has not reached its end)
-		if (currNode.children.containsKey('$')) {
+		List<String> partialRes = new ArrayList<>();
+		if (currNode.isEndNode()) {
 			//curr word + dfs rest of digits with root node
-			String currWord = currNode.children.get('$').word;
+			String currWord = currNode.getEndWord();
 			partialRes = getMatches(digits, pos);
 			for (int i=0; i<partialRes.size(); i++)
 				partialRes.set(i, currWord + " " + partialRes.get(i));
@@ -110,12 +110,5 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 		fullRes.addAll(partialRes);
 			
 		return fullRes;
-	}
-
-	private List<String> getWordForNode(Node node) {
-		if (node.children.containsKey('$'))
-			return Arrays.asList(node.children.get('$').word);
-		else
-			return Collections.emptyList();
 	}
 }

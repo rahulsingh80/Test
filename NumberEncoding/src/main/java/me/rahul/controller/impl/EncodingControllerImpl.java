@@ -1,121 +1,62 @@
 package me.rahul.controller.impl;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 import me.rahul.controller.EncodingController;
-import me.rahul.input.Dictionary;
-import me.rahul.input.SearchStrategy;
-import me.rahul.input.impl.DefaultTrieSearchStrategy;
-import me.rahul.input.impl.TrieDictionaryImpl;
+import me.rahul.data.Dictionary;
+import me.rahul.data.DictionaryFactory;
+import me.rahul.data.SearchStrategy;
+import me.rahul.data.SearchStrategyFactory;
 
 public class EncodingControllerImpl implements EncodingController {
 
-	private TrieDictionaryImpl dictionary;
-	private DefaultTrieSearchStrategy searchStrategy;
+	private DictionaryFactory dictionaryFactory;
+	private SearchStrategyFactory searchStrategyFactory;
 
-	public void encodeNumbers(String dictionaryLocation, String phoneNumbersLocation) {
+	public EncodingControllerImpl(DictionaryFactory dictionaryFactory, SearchStrategyFactory searchStrategyFactory) {
+		this.dictionaryFactory = dictionaryFactory;
+		this.searchStrategyFactory = searchStrategyFactory;
+	}
+
+	public void encodeNumbers(String dictionaryLocation, String phoneNumbersLocation) throws FileNotFoundException, IOException {
 		//Create dictionary
-		createDictionary(dictionaryLocation);
-		searchStrategy = new DefaultTrieSearchStrategy(dictionary);
+		Dictionary dictionary = dictionaryFactory.getDictionary(dictionaryLocation);
+
+		//Get search strategy
+		SearchStrategy searchStrategy = searchStrategyFactory.getSearchStrategy(dictionary);
 		
 		//Read incoming numbers from the stream, Get matches from dictionary
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(phoneNumbersLocation));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		String line;
-	    try {
-			while ((line = reader.readLine()) != null) {
-				List<String> matches = searchStrategy.getMatches(line);
-				//matches.stream().forEach(System.out::println);
-				for (String match : matches) {
-					System.out.println(line + ": " + match);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		//printMatches(phoneNumbersLocation);
-		//for ()
+		handleNumberMappings(phoneNumbersLocation, searchStrategy);
 	}
 
-	/*private void printMatches(String phoneNumbersLocation) {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(phoneNumbersLocation));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		String line;
-	    try {
-			while ((line = reader.readLine()) != null) {
-			    // process line here.
-				char[] digits = getDigitsOnly(line);
-				//Get matches
-				List<String> matches = dictionary.getMatches(digits);
-				matches.stream().forEach(System.out::println);
+	private void handleNumberMappings(String phoneNumbersLocation, SearchStrategy searchStrategy) throws FileNotFoundException, IOException {
+		//Can try Files.lines
+		try (BufferedReader reader = new BufferedReader(new FileReader(phoneNumbersLocation))) {
+			String number;
+			while ((number = reader.readLine()) != null) {
+				List<String> matches = searchStrategy.getMatches(number);
+				handlePartialMappings(number, matches);
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-	    
-	    
-	    //With Streams
-	    List<String> alist = Files.lines(Paths.get(phoneNumbersLocation))
-	    	    .filter(line -> line.contains("abc"))
-	    	    .collect(Collectors.toList());
-	}*/
-
-	private char[] getDigitsOnly(String line) {
-		// Fix this method!!!
-		char[] number = line.toCharArray(); 
-		return number;
 	}
 
-	private void createDictionary(String dictionaryLocation) {
-		//Dictionary is best gotten from another call. or through injection
-		dictionary = new TrieDictionaryImpl();
-
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(dictionaryLocation));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		String line;
-	    try {
-			while ((line = reader.readLine()) != null) {
-			    dictionary.addWord(line);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-		}	
+	private void handlePartialMappings(String number, List<String> partialMappings) {
+		partialMappings.stream().map(name -> number + ": " + name).forEach(System.out::println);
 	}
-
-	/**
-	 * This has to be there in every impl of Controller. If many controllers, we can create an abstract impl which 
-	 * has an abstract method by this name.
-	 * @param number
-	 * @return
-	 */
-	/*private List<String> getMatches(String number) {	
-		
-	}*/
 
 	public static void main(String[] args) {
-		EncodingControllerImpl controller = new EncodingControllerImpl();
-		controller.encodeNumbers("F:\\TestDictionary.txt", "F:\\TestPhoneNumbers.txt");
+		EncodingControllerImpl controller = new EncodingControllerImpl(new DictionaryFactory(), new SearchStrategyFactory());
+		try {
+			//controller.encodeNumbers("F:\\TestDictionary.txt", "F:\\TestPhoneNumbers.txt");
+			controller.encodeNumbers("F:\\360T\\numberencoding\\dictionary.txt", "F:\\360T\\numberencoding\\input.txt");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println();
 	}
 }

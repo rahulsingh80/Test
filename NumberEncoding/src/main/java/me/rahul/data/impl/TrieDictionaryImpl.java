@@ -1,18 +1,10 @@
-package me.rahul.input.impl;
+package me.rahul.data.impl;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import me.rahul.input.Dictionary;
-import me.rahul.input.SearchStrategy;
+import me.rahul.data.Dictionary;
 
 public class TrieDictionaryImpl implements Dictionary {
 
@@ -24,7 +16,6 @@ public class TrieDictionaryImpl implements Dictionary {
 
 	protected static class Node {
 		Map<Character, Node> children;
-		boolean isLeaf;
 		String word;
 
 		@Override
@@ -33,6 +24,17 @@ public class TrieDictionaryImpl implements Dictionary {
 			for (Entry<Character, Node> entry : children.entrySet())
 				str += entry.getKey().toString();
 			return str;
+		}
+
+		public boolean isEndNode() {
+			return this.children.containsKey('$');
+		}
+
+		public String getEndWord() {
+			if (this.isEndNode())
+				return children.get('$').word;
+			else
+				return null;
 		}
 	}
 
@@ -54,30 +56,12 @@ public class TrieDictionaryImpl implements Dictionary {
 				currNode = newNode;
 			}
 		}
+
+		//Add '$' node to mark end of the word  
 		Node newNode = new Node();
-		newNode.isLeaf = true;
 		newNode.word = word;
 		if (null == currNode.children)
 			currNode.children = new HashMap<>();
 		currNode.children.put('$', newNode);
 	}
-
-	@Override
-	public void createDictionary(String fileLocation) {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(fileLocation));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		String line;
-		try {
-			while ((line = reader.readLine()) != null) {
-				addWord(line);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 }

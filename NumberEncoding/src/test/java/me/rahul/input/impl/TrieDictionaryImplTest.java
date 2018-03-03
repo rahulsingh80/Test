@@ -9,6 +9,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import me.rahul.data.impl.DefaultTrieSearchStrategy;
+import me.rahul.data.impl.TrieDictionaryImpl;
+
 public class TrieDictionaryImplTest {
 
 	@Mock
