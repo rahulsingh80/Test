@@ -14,23 +14,11 @@ import me.rahul.input.search.SearchStrategy;
 public class DefaultTrieSearchStrategy implements SearchStrategy {
 
 	private TrieDictionaryImpl dictionary; 
-	static final Map<Character, List<Character>> mapping = new HashMap<>();
+	private final Map<Character, List<Character>> mapping;
 
-	public DefaultTrieSearchStrategy(TrieDictionaryImpl dictionary) {
+	public DefaultTrieSearchStrategy(TrieDictionaryImpl dictionary, Map<Character, List<Character>> mapping) {
 		this.dictionary = dictionary;
-	}
-
-	static {
-		mapping.put('0', Arrays.asList('E', 'e'));
-		mapping.put('1', Arrays.asList('J', 'N', 'Q', 'j', 'n', 'q'));
-		mapping.put('2', Arrays.asList('R', 'W', 'X', 'r', 'w', 'x'));
-		mapping.put('3', Arrays.asList('D', 'S', 'Y', 'd', 's', 'y'));
-		mapping.put('4', Arrays.asList('F', 'T', 'f', 't'));
-		mapping.put('5', Arrays.asList('A', 'M', 'a', 'm'));
-		mapping.put('6', Arrays.asList('C', 'I', 'V', 'c', 'i', 'v'));
-		mapping.put('7', Arrays.asList('B', 'K', 'U', 'b', 'k', 'u'));
-		mapping.put('8', Arrays.asList('L', 'O', 'P', 'l', 'o', 'p'));
-		mapping.put('9', Arrays.asList('G', 'H', 'Z', 'g', 'h', 'z'));
+		this.mapping = mapping;
 	}
 
 	@Override
