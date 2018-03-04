@@ -25,6 +25,7 @@ public class SearchStrategyFactory {
 		mapping.put('8', Arrays.asList('L', 'O', 'P', 'l', 'o', 'p'));
 		mapping.put('9', Arrays.asList('G', 'H', 'Z', 'g', 'h', 'z'));
 	}
+
 	public SearchStrategy getSearchStrategy(Dictionary dictionary) {
 		return new DefaultTrieSearchStrategy((TrieDictionaryImpl) dictionary, mapping);
 	}

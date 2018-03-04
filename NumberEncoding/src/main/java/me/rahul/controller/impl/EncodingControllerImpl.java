@@ -41,7 +41,6 @@ public class EncodingControllerImpl implements EncodingController {
 
 	private void handleNumberMappings(String phoneNumbersDataLocation, SearchStrategy searchStrategy)
 			throws FileNotFoundException, IOException {
-		// Can try Files.lines
 		try (BufferedReader reader = new BufferedReader(new FileReader(phoneNumbersDataLocation))) {
 			String number;
 			while ((number = reader.readLine()) != null) {

@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 
 /**
  * This represents a node in a TrieDictionaryImpl object.
- * 
  * @author Rahul
  *
  */

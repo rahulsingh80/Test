@@ -38,6 +38,7 @@ public class DefaultTrieSearchStrategyTest {
 		dictionary.addWord("Rahul");
 		DefaultTrieSearchStrategy strategy = new DefaultTrieSearchStrategy(dictionary, mapping);
 		assertTrue(strategy.getMatches("25978").contains("Rahul"));
+		assertEquals(0, strategy.getMatches("").size());
 	}
 
 	@Test

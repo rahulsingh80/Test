@@ -18,19 +18,19 @@ I have used Factories to create Dictionary and Search Strategies, to decouple Co
 Currently, the Main class creates the objects we need. In case we decide to use an injection Framework, such as Spring, these 
 dependencies can be separately injected. That will provide looser coupling.
 
-Test Coverage is not 100%. I have covered the major components - Dictionary, and execution of Search Strategy.
+Test Coverage is not 100%. I have tried to cover the major components - Dictionary, and SearchStrategy.
 Use of IO limited the writing of Test Cases.
 
 
 Packages:
 I have created different packages, that represent the different modules of the system. Here are the packages:
 main - This contains the Main class that runs the application. 
-client – This represents the whole application as a service. It is intended as the entity facing clients 
-of this application. It is not of much use right now. But if application expands later to become available in other
-formats(say as a REST service), then it will be useful.
+	client – This represents the whole application as a service. It is intended as the entity facing clients 
+	of this application. It is not of much use right now. But if application expands later, to become available in other
+	formats(say as a REST service), then it will be useful.
 controller – This controls the flow. It creates the relevant data structure, matches phone numbers against the 
-data structure, and sends the output for further handling.
+	data structure, and sends the output for further handling.
 input - This contains objects to represent and handle the Dictionary. 
-search - This has search strategy objects, to conduct the search on the Dictionary. 
+search - This has the search strategy objects, to conduct the search on the Dictionary. 
 output - This contains the Output handler.
 
