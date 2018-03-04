@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import me.rahul.data.impl.DefaultTrieSearchStrategy;
-import me.rahul.data.impl.TrieDictionaryImpl;
+import me.rahul.input.data.impl.TrieDictionaryImpl;
+import me.rahul.input.search.impl.DefaultTrieSearchStrategy;
 
 public class TrieDictionaryImplTest {
 

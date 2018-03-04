@@ -1,4 +1,4 @@
-package me.rahul.data.impl;
+package me.rahul.input.search.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,8 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.rahul.data.SearchStrategy;
-import me.rahul.data.impl.TrieDictionaryImpl.Node;
+import me.rahul.input.data.impl.Node;
+import me.rahul.input.data.impl.TrieDictionaryImpl;
+import me.rahul.input.search.SearchStrategy;
 
 public class DefaultTrieSearchStrategy implements SearchStrategy {
 
@@ -39,6 +40,7 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 		//Populate digits array, ignore slashes and dashes
 		int j=0;
 		for (int i=0; i<phoneNumber.length(); i++) {
+			//Ignore slashes and dashes
 			if (phoneNumber.charAt(i) == '-' || phoneNumber.charAt(i) == '/')
 				continue;
 			digits[j++] = phoneNumber.charAt(i);
@@ -48,12 +50,12 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	}
 
 	private int getActualSize(String phoneNumber) {
-		int i=0;
+		int numCharsToIgnore=0;
 		for (int j=0; j<phoneNumber.length(); j++) {
 			if (phoneNumber.charAt(j) == '-' || phoneNumber.charAt(j) == '/')
-				i++;
+				numCharsToIgnore++;
 		}
-		return phoneNumber.length() - i;
+		return phoneNumber.length() - numCharsToIgnore;
 	}
 
 	private boolean isPrevDigitUsed = false;
@@ -75,13 +77,6 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 		return res;
 	}
 
-	/**
-	 * Partial match
-	 * @param digits
-	 * @param pos
-	 * @param currNode
-	 * @return
-	 */
 	private List<String> dfs(char[] digits, int pos, Node currNode) {
 		//If end of digits reached, return String in currNode
 		if (pos == digits.length)
@@ -104,8 +99,8 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 		List<Character> digitMappings = mapping.get(currDigit);
 		// Call back for each mapping and add to result.
 		for (char searchChar : digitMappings)
-			if (currNode.children.containsKey(searchChar))
-				fullRes.addAll(dfs(digits, pos+1, currNode.children.get(searchChar)));
+			if (currNode.hasEdge(searchChar))
+				fullRes.addAll(dfs(digits, pos+1, currNode.getChild(searchChar)));
 
 		fullRes.addAll(partialRes);
 			

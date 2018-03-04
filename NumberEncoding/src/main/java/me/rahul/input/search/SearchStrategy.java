@@ -1,4 +1,4 @@
-package me.rahul.data;
+package me.rahul.input.search;
 
 import java.util.List;
 

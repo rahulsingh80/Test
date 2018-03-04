@@ -13,5 +13,5 @@ public interface NumberEncodingService {
 	 * @param dictionaryLocation
 	 * @param phoneNumbersLocation
 	 */
-	public void encodeNumbers(String dictionaryLocation, String phoneNumbersLocation);
+	public void encodeNumbers(String dictionaryDataLocation, String phoneNumbersDataLocation);
 }

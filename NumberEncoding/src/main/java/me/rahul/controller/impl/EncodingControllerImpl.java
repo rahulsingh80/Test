@@ -7,56 +7,47 @@ import java.io.IOException;
 import java.util.List;
 
 import me.rahul.controller.EncodingController;
-import me.rahul.data.Dictionary;
-import me.rahul.data.DictionaryFactory;
-import me.rahul.data.SearchStrategy;
-import me.rahul.data.SearchStrategyFactory;
+import me.rahul.input.data.Dictionary;
+import me.rahul.input.data.DictionaryFactory;
+import me.rahul.input.search.SearchStrategy;
+import me.rahul.input.search.SearchStrategyFactory;
+import me.rahul.output.ConsoleOutputHandler;
+import me.rahul.output.OutputHandler;
 
 public class EncodingControllerImpl implements EncodingController {
 
 	private DictionaryFactory dictionaryFactory;
 	private SearchStrategyFactory searchStrategyFactory;
+	OutputHandler outputHandler;
 
-	public EncodingControllerImpl(DictionaryFactory dictionaryFactory, SearchStrategyFactory searchStrategyFactory) {
+	public EncodingControllerImpl(DictionaryFactory dictionaryFactory, SearchStrategyFactory searchStrategyFactory,
+			OutputHandler outputHandler) {
 		this.dictionaryFactory = dictionaryFactory;
 		this.searchStrategyFactory = searchStrategyFactory;
+		this.outputHandler = outputHandler;
 	}
 
-	public void encodeNumbers(String dictionaryLocation, String phoneNumbersLocation) throws FileNotFoundException, IOException {
-		//Create dictionary
-		Dictionary dictionary = dictionaryFactory.getDictionary(dictionaryLocation);
+	public void encodeNumbers(String dictionaryDataLocation, String phoneNumbersDataLocation)
+			throws FileNotFoundException, IOException {
+		// Create dictionary
+		Dictionary dictionary = dictionaryFactory.createDictionary(dictionaryDataLocation);
 
-		//Get search strategy
+		// Get search strategy
 		SearchStrategy searchStrategy = searchStrategyFactory.getSearchStrategy(dictionary);
-		
-		//Read incoming numbers from the stream, Get matches from dictionary
-		handleNumberMappings(phoneNumbersLocation, searchStrategy);
+
+		// Read incoming numbers from the stream, Get matches from dictionary
+		handleNumberMappings(phoneNumbersDataLocation, searchStrategy);
 	}
 
-	private void handleNumberMappings(String phoneNumbersLocation, SearchStrategy searchStrategy) throws FileNotFoundException, IOException {
-		//Can try Files.lines
-		try (BufferedReader reader = new BufferedReader(new FileReader(phoneNumbersLocation))) {
+	private void handleNumberMappings(String phoneNumbersDataLocation, SearchStrategy searchStrategy)
+			throws FileNotFoundException, IOException {
+		// Can try Files.lines
+		try (BufferedReader reader = new BufferedReader(new FileReader(phoneNumbersDataLocation))) {
 			String number;
 			while ((number = reader.readLine()) != null) {
 				List<String> matches = searchStrategy.getMatches(number);
-				handlePartialMappings(number, matches);
+				outputHandler.handlePartialOutput(number, matches);
 			}
 		}
-	}
-
-	private void handlePartialMappings(String number, List<String> partialMappings) {
-		partialMappings.stream().map(name -> number + ": " + name).forEach(System.out::println);
-	}
-
-	public static void main(String[] args) {
-		EncodingControllerImpl controller = new EncodingControllerImpl(new DictionaryFactory(), new SearchStrategyFactory());
-		try {
-			//controller.encodeNumbers("F:\\TestDictionary.txt", "F:\\TestPhoneNumbers.txt");
-			controller.encodeNumbers("F:\\360T\\numberencoding\\dictionary.txt", "F:\\360T\\numberencoding\\input.txt");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println();
 	}
 }

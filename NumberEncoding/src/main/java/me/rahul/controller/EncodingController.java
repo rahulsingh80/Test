@@ -10,5 +10,5 @@ import java.io.IOException;
  */
 public interface EncodingController {
 
-	public void encodeNumbers(String dictionaryLocation, String phoneNumbersLocation) throws FileNotFoundException, IOException;
+	public void encodeNumbers(String dictionaryDataLocation, String phoneNumbersDataLocation) throws FileNotFoundException, IOException;
 }
