@@ -8,6 +8,11 @@ import me.rahul.input.data.DictionaryFactory;
 import me.rahul.input.search.SearchStrategyFactory;
 import me.rahul.output.ConsoleOutputHandler;
 
+/**
+ * This class runs the application
+ * @author Rahul
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) {

@@ -4,8 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * This represents a node in a TrieDictionaryImpl object.
+ * 
+ * @author Rahul
+ *
+ */
 public class Node {
-	private Map<Character, Node> children;
+	private Map<Character, Node> children;	//The key marks the outgoing character.
 	private String word;
 
 	public Map<Character, Node> getChildren() {
@@ -20,12 +26,22 @@ public class Node {
 		this.word = word;
 	}
 
+	/**
+	 * Does this node represent the end of a name. Each end node will have an
+	 * outgoing edge for '$' The node at the end of the '$' edge contains the name.
+	 * 
+	 * @return
+	 */
 	public boolean isEndNode() {
 		if (null == this.children)
 			return false;
 		return this.children.containsKey('$');
 	}
 
+	/**
+	 * If this is an end node, return the corresponding word.
+	 * @return
+	 */
 	public String getEndWord() {
 		if (this.isEndNode())
 			return children.get('$').word;
@@ -33,6 +49,11 @@ public class Node {
 			return null;
 	}
 
+	/**
+	 * Is there an outgoing edge for character 'c'
+	 * @param c
+	 * @return
+	 */
 	public boolean hasEdge(char c) {
 		if (null == children)
 			return false;
@@ -41,24 +62,26 @@ public class Node {
 		return true;
 	}
 
+	/**
+	 * Get node for outgoing edge 'c'
+	 * @param c
+	 * @return
+	 */
 	public Node getChild(char c) {
 		if (null == children)
 			return null;
 		return children.get(c);
 	}
 
+	/**
+	 * Add a child node on an outgoing edge marked 'c'
+	 *  
+	 * @param c
+	 * @param child
+	 */
 	public void addChild(char c, Node child) {
 		if (null == children)
 			children = new HashMap<>();
 		children.put(c, child);
 	}
-
-	@Override
-	public String toString() {
-		String str = "";
-		for (Entry<Character, Node> entry : children.entrySet())
-			str += entry.getKey().toString();
-		return str;
-	}
-
 }
