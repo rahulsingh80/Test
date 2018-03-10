@@ -25,6 +25,19 @@ public class Node {
 		this.word = word;
 	}
 
+	@Override
+	public String toString() {
+		if (null != word)
+			return word;
+		String s = "";
+		for (Character child : children.keySet()) {
+			s += child;
+		}
+		if (children.containsKey('$'))
+			s += " , word=" + children.get('$').word;
+		return s;
+	}
+
 	/**
 	 * Does this node represent the end of a name. Each end node will have an
 	 * outgoing edge for '$' The node at the end of the '$' edge contains the name.

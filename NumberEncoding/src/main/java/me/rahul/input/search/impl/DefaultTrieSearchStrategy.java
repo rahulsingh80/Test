@@ -35,7 +35,7 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 			digits[j++] = phoneNumber.charAt(i);
 		}
 
-		return getMatches(digits, 0);
+		return getMatches(digits, 0, false);
 	}
 
 	/**
@@ -53,21 +53,17 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 		return phoneNumber.length() - numCharsToIgnore;
 	}
 
-	private boolean isPrevDigitUsed = false;
-
-	private List<String> getMatches(char[] digits, int pos) {
-		List<String> res = dfs(digits, pos, dictionary.getRoot());
+	private List<String> getMatches(char[] digits, int pos, boolean isPrevDigitUsed) {
+		List<String> res = dfs(digits, pos, dictionary.getRoot(), isPrevDigitUsed);
 
 		if (!isPrevDigitUsed && res.isEmpty()) {
 			String currWord = digits[pos] + "";
 			if (pos == digits.length - 1)
 				return Arrays.asList(currWord);
-			res = dfs(digits, pos + 1, dictionary.getRoot());
+			res = dfs(digits, pos + 1, dictionary.getRoot(), true);
 			for (int i = 0; i < res.size(); i++)
 				res.set(i, currWord + " " + res.get(i));
-			isPrevDigitUsed = true;
-		} else
-			isPrevDigitUsed = false;
+		}
 		return res;
 	}
 
@@ -80,8 +76,8 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 	 * @param currNode
 	 * @return
 	 */
-	private List<String> dfs(char[] digits, int pos, Node currNode) {
-		// If end of digits reached, return String in currNode
+	private List<String> dfs(char[] digits, int pos, Node currNode, boolean isPrevDigitUsed) {
+		// If end of digits reached, return end word of currNode
 		if (pos == digits.length)
 			return (currNode.isEndNode() ? Arrays.asList(currNode.getEndWord()) : Collections.emptyList());
 
@@ -92,7 +88,7 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 		if (currNode.isEndNode()) {
 			// curr word + dfs rest of digits with root node
 			String currWord = currNode.getEndWord();
-			partialRes = getMatches(digits, pos);
+			partialRes = getMatches(digits, pos, isPrevDigitUsed);
 			for (int i = 0; i < partialRes.size(); i++)
 				partialRes.set(i, currWord + " " + partialRes.get(i));
 		}
@@ -103,7 +99,7 @@ public class DefaultTrieSearchStrategy implements SearchStrategy {
 		// Call back for each mapping and add to result.
 		for (char searchChar : digitMappings)
 			if (currNode.hasEdge(searchChar))
-				fullRes.addAll(dfs(digits, pos + 1, currNode.getChild(searchChar)));
+				fullRes.addAll(dfs(digits, pos + 1, currNode.getChild(searchChar), false));
 
 		fullRes.addAll(partialRes);
 

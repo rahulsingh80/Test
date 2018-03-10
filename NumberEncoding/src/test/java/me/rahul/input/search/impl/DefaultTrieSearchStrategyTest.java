@@ -61,4 +61,39 @@ public class DefaultTrieSearchStrategyTest {
 		assertTrue(strategy.getMatches("8585").contains("Pa Pa"));
 		assertEquals(2, strategy.getMatches("8585").size());
 	}
+
+	@Test
+	public void testGetMatchesTwiceWithDigitEncoding() {
+		dictionary = new TrieDictionaryImpl();
+		dictionary.addWord("e");
+		DefaultTrieSearchStrategy strategy = new DefaultTrieSearchStrategy(dictionary, mapping);
+		assertTrue(strategy.getMatches("10").contains("1 e"));
+		assertTrue(strategy.getMatches("10").contains("1 e"));
+	}
+
+	@Test
+	public void testSpecificCase_1() {
+		dictionary = new TrieDictionaryImpl();
+		dictionary.addWord("Mai");
+		DefaultTrieSearchStrategy strategy = new DefaultTrieSearchStrategy(dictionary, mapping);
+		assertTrue(strategy.getMatches("1556/0").contains("1 Mai 0"));
+		/*dictionary.addWord("Ja");
+		assertEquals(0, strategy.getMatches("1556/0").size());*/
+	}
+
+	@Test
+	public void testSpecificCase_2() {
+		dictionary = new TrieDictionaryImpl();
+		dictionary.addWord("Alf");
+		dictionary.addWord("alt");
+		dictionary.addWord("ej");
+		DefaultTrieSearchStrategy strategy = new DefaultTrieSearchStrategy(dictionary, mapping);
+		assertTrue(strategy.getMatches("584201").contains("Alf 2 ej"));
+		assertTrue(strategy.getMatches("584201").contains("alt 2 ej"));
+		assertEquals(2, strategy.getMatches("584201").size());
+		assertTrue(strategy.getMatches("584/2").contains("Alf 2"));
+		assertTrue(strategy.getMatches("584/2").contains("alt 2"));
+		assertEquals(2, strategy.getMatches("584/2").size());
+	}
+
 }
