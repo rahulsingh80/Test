@@ -10,12 +10,21 @@ import me.rahul.input.data.impl.Node;
 import me.rahul.input.data.impl.TrieDictionaryImpl;
 import me.rahul.input.search.SearchStrategy;
 
-public class DefaultTrieSearchStrategy_2 implements SearchStrategy {
+/**
+ * This is very similar to DefaultTrieSearchStrategy class. The difference is
+ * that this class will not encode a digit, even if only a partial match(less
+ * than the size of the phone number) is found, that starts at the index of the
+ * digit.
+ * 
+ * @author Rahul
+ *
+ */
+public class DefaultTriePartialEncodingSearchStrategy implements SearchStrategy {
 
 	private TrieDictionaryImpl dictionary;
 	private final Map<Character, List<Character>> mapping;
 
-	public DefaultTrieSearchStrategy_2(TrieDictionaryImpl dictionary, Map<Character, List<Character>> mapping) {
+	public DefaultTriePartialEncodingSearchStrategy(TrieDictionaryImpl dictionary, Map<Character, List<Character>> mapping) {
 		this.dictionary = dictionary;
 		this.mapping = mapping;
 	}
@@ -61,22 +70,22 @@ public class DefaultTrieSearchStrategy_2 implements SearchStrategy {
 		List<String> matches = dfs(digits, pos, dictionary.getRoot());
 		int lengthLeft = getLengthLeft(digits, pos);
 		for (String match : matches) {
-			//Handle full match
+			// Handle full match
 			if (lengthLeft == getActualLengthOfEncoding(match))
 				result.add(match);
-			//Handle partial match
+			// Handle partial match
 			else {
-				List<String> remainingMatches = getMatches(digits, pos+getActualLengthOfEncoding(match), false);
+				List<String> remainingMatches = getMatches(digits, pos + getActualLengthOfEncoding(match), false);
 				List<String> fusedMatches = addWords(match, remainingMatches);
 				addEligibleWords(result, fusedMatches, lengthLeft);
 			}
 		}
-		//If no result, add digit and then call back recursively
+		// If no result, add digit and then call back recursively
 		if (matches.isEmpty() && !isPrevDigitUsed) {
 			String currWord = digits[pos] + "";
 			if (pos == digits.length - 1)
 				return Arrays.asList(currWord);
-			List<String> remainingMatches = getMatches(digits, pos+1, true);
+			List<String> remainingMatches = getMatches(digits, pos + 1, true);
 			List<String> fusedMatches = addWords(currWord, remainingMatches);
 			addEligibleWords(result, fusedMatches, lengthLeft);
 		}
@@ -94,7 +103,7 @@ public class DefaultTrieSearchStrategy_2 implements SearchStrategy {
 			if (c == ' ' || c == '"')
 				continue;
 			length++;
-			
+
 		}
 		return length;
 	}
@@ -113,6 +122,7 @@ public class DefaultTrieSearchStrategy_2 implements SearchStrategy {
 				targetList.add(s);
 		}
 	}
+
 	/**
 	 * Recursive function to perform Depth First Search down the Trie Dictionary.
 	 * Returns list of exact and partial matches starting at pos.
@@ -123,17 +133,18 @@ public class DefaultTrieSearchStrategy_2 implements SearchStrategy {
 	 * @return
 	 */
 	private List<String> dfs(char[] digits, int pos, Node currNode) {
-		//If end of digits reached, return end word of currNode
+		// If end of digits reached, return end word of currNode
 		if (pos == digits.length)
 			return (currNode.isEndNode() ? Arrays.asList(currNode.getEndWord()) : Collections.emptyList());
 
 		List<String> result = new ArrayList<>();
 
-		//If currNode is an end node, add its end word to results
+		// If currNode is an end node, add its end word to results
 		if (currNode.isEndNode())
-			result.add(currNode.getEndWord()); 
+			result.add(currNode.getEndWord());
 
-		//Get mappings for current digit in current node. Call back recursively and add to results.
+		// Get mappings for current digit in current node. Call back recursively and add
+		// to results.
 		char currDigit = digits[pos];
 		List<Character> digitMappings = mapping.get(currDigit);
 		// Call back for each mapping and add to result.

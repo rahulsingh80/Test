@@ -7,8 +7,7 @@ import java.util.Map;
 
 import me.rahul.input.data.Dictionary;
 import me.rahul.input.data.impl.TrieDictionaryImpl;
-import me.rahul.input.search.impl.DefaultTrieSearchStrategy;
-import me.rahul.input.search.impl.DefaultTrieSearchStrategy_2;
+import me.rahul.input.search.impl.DefaultTriePartialEncodingSearchStrategy;
 
 public class SearchStrategyFactory {
 
@@ -28,6 +27,6 @@ public class SearchStrategyFactory {
 	}
 
 	public SearchStrategy getSearchStrategy(Dictionary dictionary) {
-		return new DefaultTrieSearchStrategy_2((TrieDictionaryImpl) dictionary, mapping);
+		return new DefaultTriePartialEncodingSearchStrategy((TrieDictionaryImpl) dictionary, mapping);
 	}
 }

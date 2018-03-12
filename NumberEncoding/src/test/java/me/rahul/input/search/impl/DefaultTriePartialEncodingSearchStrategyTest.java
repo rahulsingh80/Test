@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import me.rahul.input.data.impl.TrieDictionaryImpl;
 
-public class DefaultTrieSearchStrategy_2Test {
+public class DefaultTriePartialEncodingSearchStrategyTest {
 
 	TrieDictionaryImpl dictionary;
 	final Map<Character, List<Character>> mapping = new HashMap<>();
@@ -36,7 +36,7 @@ public class DefaultTrieSearchStrategy_2Test {
 	public void testGetMatches() {
 		dictionary = new TrieDictionaryImpl();
 		dictionary.addWord("Rahul");
-		DefaultTrieSearchStrategy_2 strategy = new DefaultTrieSearchStrategy_2(dictionary, mapping);
+		DefaultTriePartialEncodingSearchStrategy strategy = new DefaultTriePartialEncodingSearchStrategy(dictionary, mapping);
 		assertTrue(strategy.getMatches("25978").contains("Rahul"));
 		assertEquals(0, strategy.getMatches("").size());
 	}
@@ -44,7 +44,7 @@ public class DefaultTrieSearchStrategy_2Test {
 	@Test
 	public void testGetMatchesEmptyDictionary() {
 		dictionary = new TrieDictionaryImpl();
-		DefaultTrieSearchStrategy_2 strategy = new DefaultTrieSearchStrategy_2(dictionary, mapping);
+		DefaultTriePartialEncodingSearchStrategy strategy = new DefaultTriePartialEncodingSearchStrategy(dictionary, mapping);
 		assertFalse(strategy.getMatches("25978").contains("Rahul"));
 		assertEquals(0, strategy.getMatches("").size());
 	}
@@ -54,7 +54,7 @@ public class DefaultTrieSearchStrategy_2Test {
 		dictionary = new TrieDictionaryImpl();
 		dictionary.addWord("Papa");
 		dictionary.addWord("Pa");
-		DefaultTrieSearchStrategy_2 strategy = new DefaultTrieSearchStrategy_2(dictionary, mapping);
+		DefaultTriePartialEncodingSearchStrategy strategy = new DefaultTriePartialEncodingSearchStrategy(dictionary, mapping);
 		assertTrue(strategy.getMatches("85").contains("Pa"));
 		assertEquals(1, strategy.getMatches("85").size());
 		assertTrue(strategy.getMatches("8585").contains("Papa"));
@@ -66,7 +66,7 @@ public class DefaultTrieSearchStrategy_2Test {
 	public void testGetMatchesTwiceWithDigitEncoding() {
 		dictionary = new TrieDictionaryImpl();
 		dictionary.addWord("e");
-		DefaultTrieSearchStrategy_2 strategy = new DefaultTrieSearchStrategy_2(dictionary, mapping);
+		DefaultTriePartialEncodingSearchStrategy strategy = new DefaultTriePartialEncodingSearchStrategy(dictionary, mapping);
 		assertTrue(strategy.getMatches("10").contains("1 e"));
 		assertTrue(strategy.getMatches("10").contains("1 e"));
 	}
@@ -84,7 +84,7 @@ public class DefaultTrieSearchStrategy_2Test {
 		dictionary.addWord("x\"yz");
 		dictionary.addWord("yz");
 		dictionary.addWord("\"\"\"z\"\"");
-		DefaultTrieSearchStrategy_2 strategy = new DefaultTrieSearchStrategy_2(dictionary, mapping);
+		DefaultTriePartialEncodingSearchStrategy strategy = new DefaultTriePartialEncodingSearchStrategy(dictionary, mapping);
 		assertTrue(strategy.getMatches("--5").contains("a"));
 		assertTrue(strategy.getMatches("5").contains("a"));
 		assertTrue(strategy.getMatches("-/-5/--").contains("a"));
@@ -104,7 +104,7 @@ public class DefaultTrieSearchStrategy_2Test {
 	public void testSpecificCase_1() {
 		dictionary = new TrieDictionaryImpl();
 		dictionary.addWord("Mai");
-		DefaultTrieSearchStrategy_2 strategy = new DefaultTrieSearchStrategy_2(dictionary, mapping);
+		DefaultTriePartialEncodingSearchStrategy strategy = new DefaultTriePartialEncodingSearchStrategy(dictionary, mapping);
 		assertTrue(strategy.getMatches("1556/0").contains("1 Mai 0"));
 		dictionary.addWord("Ja");
 		assertEquals(0, strategy.getMatches("1556/0").size());
@@ -116,7 +116,7 @@ public class DefaultTrieSearchStrategy_2Test {
 		dictionary.addWord("Alf");
 		dictionary.addWord("alt");
 		dictionary.addWord("ej");
-		DefaultTrieSearchStrategy_2 strategy = new DefaultTrieSearchStrategy_2(dictionary, mapping);
+		DefaultTriePartialEncodingSearchStrategy strategy = new DefaultTriePartialEncodingSearchStrategy(dictionary, mapping);
 		assertTrue(strategy.getMatches("584201").contains("Alf 2 ej"));
 		assertTrue(strategy.getMatches("584201").contains("alt 2 ej"));
 		assertEquals(2, strategy.getMatches("584201").size());
