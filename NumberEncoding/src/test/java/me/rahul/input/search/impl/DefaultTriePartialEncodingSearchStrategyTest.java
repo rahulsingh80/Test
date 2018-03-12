@@ -104,6 +104,7 @@ public class DefaultTriePartialEncodingSearchStrategyTest {
 		DefaultTriePartialEncodingSearchStrategy strategy = new DefaultTriePartialEncodingSearchStrategy(dictionary, mapping);
 		assertTrue(strategy.getMatches("1556/0").contains("1 Mai 0"));
 		dictionary.addWord("Ja");
+		assertFalse(strategy.getMatches("1556/0").contains("1 Mai 0"));
 		assertEquals(0, strategy.getMatches("1556/0").size());
 	}
 
