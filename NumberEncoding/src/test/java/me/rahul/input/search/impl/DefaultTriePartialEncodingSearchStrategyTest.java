@@ -74,9 +74,6 @@ public class DefaultTriePartialEncodingSearchStrategyTest {
 	@Test
 	public void testDashesSlashesAndSpaces() {
 		dictionary = new TrieDictionaryImpl();
-		/*List<String> words = Arrays.asList("Jagdgefa\"hrten","Jagdgenossenschaft","Jagdgera\"t","Jagdgeschwaders","Jagdgesetz","Jagdgewehr","jagdgru\"n","Jagdgru\"nde","Jagdhaus","Jagdha\"user","Jagdhund","Jagdhu\"tte");
-		for (String word : words)
-			dictionary.addWord(word);*/
 		dictionary.addWord("a");
 		dictionary.addWord("ab");
 		dictionary.addWord("abc");
